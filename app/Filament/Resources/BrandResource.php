@@ -6,18 +6,18 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Brand;
 use Filament\Forms\Set;
-use Illuminate\Support\Str;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Filament\Resources\Resource;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BrandResource\Pages;
-use Filament\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BrandResource\RelationManagers;
 
@@ -48,7 +48,7 @@ class BrandResource extends Resource
                         ]),
                         FileUpload::make('image')
                             ->image()
-                            ->directory('categories'),
+                            ->directory('brands'),
                         toggle::make('is_active')
                             ->required()
                             ->default(true)
