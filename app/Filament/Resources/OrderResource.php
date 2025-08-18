@@ -144,21 +144,21 @@ class OrderResource extends Resource
                                     ->dehydrated()
                                     ->columnSpan(3),
                             ])->columns(12),
-                        Placeholder::make('grand_total_placeholder')
+                         Placeholder::make('grand_total_placeholder')
                             ->label('Grand Total')
                             ->content(function (Get $get, Set $set) {
                                 $total = 0;
-                                if(!$repeaters = $get('items')) {
+                                if (!$repeaters = $get('items')) {
                                     return $total;
                                 }
-                                foreach($repeaters as $key => $repeater) {
-                                    $total += $get('items.{$key}.total_amount');
+                                foreach ($repeaters as $key => $repeater) {
+                                    $total += $get("items.{$key}.total_amount");
                                 }
                                 $set('grand_total', $total);
                                 return Number::currency($total, 'USD');
                             }),
-                            Hidden::make('grand_total')
-                                ->default(0)
+                        Hidden::make('grand_total')
+                            ->default(0)
                     ])
                 ])->columnSpanFull()
             ]);
@@ -221,7 +221,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            AddressRelationManager::class,
+            AddressRelationManager::class
         ];
     }
 
@@ -230,9 +230,9 @@ class OrderResource extends Resource
         return static::getModel()::count();
     }
 
-    public static function getNavigationBadgeColor(): string
+    public static function getNavigationBadgeColor(): string|array|null
     {
-        return static::getModel()::count() > 10 ? 'success' : 'danger';
+        return static::getModel()::count() < 10 ? 'danger' : 'success';
     }
 
     public static function getPages(): array

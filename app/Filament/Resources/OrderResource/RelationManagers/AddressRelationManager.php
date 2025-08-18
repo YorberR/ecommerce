@@ -3,14 +3,15 @@
 namespace App\Filament\Resources\OrderResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Tables;
 use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TextArea;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Resources\RelationManagers\RelationManager;
 
 class AddressRelationManager extends RelationManager
 {
@@ -29,7 +30,10 @@ class AddressRelationManager extends RelationManager
                 TextInput::make('phone')
                     ->required()
                     ->tel()
-                    ->maxLength(20),
+                    ->maxLength(255),
+                TextInput::make('country')
+                    ->required()
+                    ->maxLength(255),
                 TextInput::make('city')
                     ->required()
                     ->maxLength(255),
@@ -39,13 +43,10 @@ class AddressRelationManager extends RelationManager
                 TextInput::make('zip_code')
                     ->required()
                     ->numeric()
-                    ->maxLength(10),
-                TextInput::make('country')
-                    ->required()
                     ->maxLength(255),
-                Textarea::make('street_address')
+                TextArea::make('street_address')
                     ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
             ]);
     }
 
@@ -60,7 +61,7 @@ class AddressRelationManager extends RelationManager
                 TextColumn::make('city'),
                 TextColumn::make('state'),
                 TextColumn::make('zip_code'),
-                TextColumn::make('street_address')
+                TextColumn::make('street_address'),
             ])
             ->filters([
                 //
