@@ -10,6 +10,7 @@ use Livewire\Attributes\Title;
 class ProductDetailPage extends Component
 {
     public $slug;
+    public $quantity = 1;
 
     public function mount($slug)
     {
