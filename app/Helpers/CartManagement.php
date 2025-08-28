@@ -29,9 +29,42 @@ class CartManagement
                 $cart_items[] = [
                     'product_id' => $product->id,
                     'name' => $product->name,
-                    'image' => $product->image,
+                    'image' => $product->image[0] ?? '',
                     'unit_amount' => $product->price,
                     'quantity' => 1,
+                    'total_amount' => $product->price,
+                ];
+            }
+        }
+        self::addCartItemesToCookie($cart_items);
+        return count($cart_items);
+    }
+
+    public static function addItemToCartWithQty($product_id, $qty = 1)
+    {
+        $cart_items = self::getCartItemsFromCookie();
+
+        $existing_item = null;
+
+        foreach($cart_items as $key => $item){
+            if($item['product_id'] == $product_id){
+                $existing_item = $key;
+                break;
+            }
+        }
+
+        if($existing_item !== null){
+            $cart_items[$existing_item]['quantity'] = $qty;
+            $cart_items[$existing_item]['total_amount'] = $cart_items[$existing_item]['quantity'] * $cart_items[$existing_item]['unit_amount'];
+        }else{
+            $product = Product::where('id', $product_id)->first('id', 'name', 'price', 'image');
+            if($product){
+                $cart_items[] = [
+                    'product_id' => $product->id,
+                    'name' => $product->name,
+                    'image' => $product->image[0] ?? '',
+                    'unit_amount' => $product->price,
+                    'quantity' => $qty,
                     'total_amount' => $product->price,
                 ];
             }
@@ -70,9 +103,29 @@ class CartManagement
     {
         $cart_items = json_decode(Cookie::get('cart_items'), true);
         if (!$cart_items) {
-            $cart_items = [];
+            return [];
         }
-        return $cart_items;
+
+        $product_ids = array_column($cart_items, 'product_id');
+        $products = Product::whereIn('id', $product_ids)->get();
+        $final_cart_items = [];
+
+        foreach ($cart_items as $cart_item) {
+            $product = $products->where('id', $cart_item['product_id'])->first();
+
+            if ($product) {
+                $final_cart_items[] = [
+                    'product_id' => $product->id,
+                    'name' => $product->name,
+                    'image' => $product->image[0] ?? '',
+                    'quantity' => $cart_item['quantity'],
+                    'unit_amount' => $product->price,
+                    'total_amount' => $cart_item['quantity'] * $product->price,
+                ];
+            }
+        }
+
+        return $final_cart_items;
     }
 
     public static function incrementQuantityToCartItem($product_id)
